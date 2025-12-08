@@ -1,1 +1,14 @@
-.vs
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build
+bin/
+obj/
+
+# Logs
+*.log
+
+appsettings.Local.json
+

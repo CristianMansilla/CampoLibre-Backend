@@ -2,11 +2,11 @@
 
 namespace CampoLibre.Api.Application.DTOs
 {
-    public class UsuarioUpdateDto
+    public class AuthRegisterDto
     {
         public string NombreCompleto { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public string? Password { get; set; }
-        public UserRole Rol { get; set; }
+        public string Password { get; set; } = null!;
+        public UserRole Rol { get; set; }   // Cliente, Operador, Admin
     }
 }

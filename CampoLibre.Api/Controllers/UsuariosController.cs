@@ -3,6 +3,8 @@ using CampoLibre.Api.Domain.Entities;
 using CampoLibre.Api.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace CampoLibre.Api.Controllers
 {
@@ -11,14 +13,17 @@ namespace CampoLibre.Api.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IPasswordHasher<Usuario> _passwordHasher;
 
-        public UsuariosController(AppDbContext context)
+        public UsuariosController(AppDbContext context, IPasswordHasher<Usuario> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         // GET: api/usuarios
         [HttpGet]
+        [Authorize(Roles = "Admin,Operador")]
         public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetUsuarios()
         {
             var usuarios = await _context.Usuarios
@@ -36,6 +41,7 @@ namespace CampoLibre.Api.Controllers
 
         // GET: api/usuarios/5
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin,Operador")]
         public async Task<ActionResult<UsuarioDto>> GetUsuario(int id)
         {
             var usuario = await _context.Usuarios
@@ -57,6 +63,7 @@ namespace CampoLibre.Api.Controllers
 
         // POST: api/usuarios
         [HttpPost]
+        [Authorize(Roles = "Admin,Operador")]
         public async Task<ActionResult<UsuarioDto>> CreateUsuario([FromBody] UsuarioCreateDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.NombreCompleto))
@@ -64,6 +71,9 @@ namespace CampoLibre.Api.Controllers
 
             if (string.IsNullOrWhiteSpace(dto.Email))
                 return BadRequest("El email es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                return BadRequest("La contraseña es obligatoria.");
 
             var emailExiste = await _context.Usuarios
                 .AnyAsync(u => u.Email == dto.Email);
@@ -75,9 +85,10 @@ namespace CampoLibre.Api.Controllers
             {
                 NombreCompleto = dto.NombreCompleto,
                 Email = dto.Email,
-                PasswordHash = dto.Password, // más adelante: hash
                 Rol = dto.Rol
             };
+
+            usuario.PasswordHash = _passwordHasher.HashPassword(usuario, dto.Password);
 
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
@@ -95,6 +106,7 @@ namespace CampoLibre.Api.Controllers
 
         // PUT: api/usuarios/5
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin,Operador")]
         public async Task<IActionResult> UpdateUsuario(int id, [FromBody] UsuarioUpdateDto dto)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
@@ -118,6 +130,11 @@ namespace CampoLibre.Api.Controllers
             usuario.Email = dto.Email;
             usuario.Rol = dto.Rol;
 
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+            {
+                usuario.PasswordHash = _passwordHasher.HashPassword(usuario, dto.Password);
+            }
+
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -125,6 +142,7 @@ namespace CampoLibre.Api.Controllers
 
         // DELETE: api/usuarios/5
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin,Operador")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);

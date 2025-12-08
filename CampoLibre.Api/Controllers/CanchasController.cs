@@ -3,6 +3,8 @@ using CampoLibre.Api.Domain.Entities;
 using CampoLibre.Api.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace CampoLibre.Api.Controllers
 {
@@ -19,6 +21,7 @@ namespace CampoLibre.Api.Controllers
 
         // GET: api/canchas
         [HttpGet]
+        [AllowAnonymous]  // cualquiera puede ver
         public async Task<ActionResult<IEnumerable<CanchaDto>>> GetCanchas()
         {
             var canchas = await _context.Canchas
@@ -38,6 +41,7 @@ namespace CampoLibre.Api.Controllers
 
         // GET: api/canchas/5
         [HttpGet("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<CanchaDto>> GetCancha(int id)
         {
             var cancha = await _context.Canchas
@@ -61,6 +65,7 @@ namespace CampoLibre.Api.Controllers
 
         // POST: api/canchas
         [HttpPost]
+        [Authorize(Roles = "Admin,Operador")]
         public async Task<ActionResult<CanchaDto>> CreateCancha([FromBody] CanchaCreateUpdateDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Nombre))
@@ -96,6 +101,7 @@ namespace CampoLibre.Api.Controllers
 
         // PUT: api/canchas/5
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin,Operador")]
         public async Task<IActionResult> UpdateCancha(int id, [FromBody] CanchaCreateUpdateDto dto)
         {
             var cancha = await _context.Canchas.FindAsync(id);
@@ -121,6 +127,7 @@ namespace CampoLibre.Api.Controllers
 
         // DELETE: api/canchas/5
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin,Operador")]
         public async Task<IActionResult> DeleteCancha(int id)
         {
             var cancha = await _context.Canchas.FindAsync(id);

@@ -3,6 +3,8 @@ using CampoLibre.Api.Domain.Entities;
 using CampoLibre.Api.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace CampoLibre.Api.Controllers
 {
@@ -19,6 +21,7 @@ namespace CampoLibre.Api.Controllers
 
         // GET: api/reservas
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ReservaDto>>> GetReservas()
         {
             var reservas = await _context.Reservas
@@ -42,6 +45,7 @@ namespace CampoLibre.Api.Controllers
 
         // GET: api/reservas/5
         [HttpGet("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<ReservaDto>> GetReserva(int id)
         {
             var reserva = await _context.Reservas
@@ -69,6 +73,7 @@ namespace CampoLibre.Api.Controllers
 
         // POST: api/reservas
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ReservaDto>> CreateReserva([FromBody] ReservaCreateUpdateDto dto)
         {
             if (dto.FechaHoraInicio >= dto.FechaHoraFin)
@@ -120,6 +125,7 @@ namespace CampoLibre.Api.Controllers
 
         // PUT: api/reservas/5
         [HttpPut("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> UpdateReserva(int id, [FromBody] ReservaCreateUpdateDto dto)
         {
             var reserva = await _context.Reservas.FindAsync(id);
@@ -162,6 +168,7 @@ namespace CampoLibre.Api.Controllers
 
         // DELETE: api/reservas/5
         [HttpDelete("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> DeleteReserva(int id)
         {
             var reserva = await _context.Reservas.FindAsync(id);
