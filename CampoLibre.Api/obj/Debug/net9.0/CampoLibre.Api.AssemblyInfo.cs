@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CampoLibre.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1456af57f639dfeacdc8fd87b8fea4c0a1214bc9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4b140e3a0aa2ed1a00c7319f7b33e57c2f652d3e")]
 [assembly: System.Reflection.AssemblyProductAttribute("CampoLibre.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CampoLibre.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
