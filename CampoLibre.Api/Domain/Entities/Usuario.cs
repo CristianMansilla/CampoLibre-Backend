@@ -14,6 +14,8 @@ namespace CampoLibre.Api.Domain.Entities
 
         public UserRole Rol { get; set; }
 
+        public bool Activo { get; set; } = true;
+
         // Navegación
         public ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
     }

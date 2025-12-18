@@ -74,6 +74,14 @@ namespace CampoLibre.Api.Controllers
             if (string.IsNullOrWhiteSpace(dto.Tipo))
                 return BadRequest("El tipo de cancha es obligatorio.");
 
+            if (dto.PrecioHora <= 0)
+                return BadRequest("El precio por hora debe ser mayor a 0.");
+
+            var tiposValidos = new[] { "Fútbol 5", "Fútbol 7", "Fútbol 11", "Pádel", "Tenis", "Básquet", "Vóley" };
+
+            if (!tiposValidos.Contains(dto.Tipo))
+                return BadRequest("El tipo de cancha no es válido.");
+
             var cancha = new Cancha
             {
                 Nombre = dto.Nombre,
@@ -113,6 +121,11 @@ namespace CampoLibre.Api.Controllers
 
             if (string.IsNullOrWhiteSpace(dto.Tipo))
                 return BadRequest("El tipo de cancha es obligatorio.");
+
+            var tiposValidos = new[] { "Fútbol 5", "Fútbol 7", "Fútbol 11", "Pádel", "Tenis", "Básquet", "Vóley" };
+
+            if (!tiposValidos.Contains(dto.Tipo))
+                return BadRequest("El tipo de cancha no es válido.");
 
             cancha.Nombre = dto.Nombre;
             cancha.Tipo = dto.Tipo;

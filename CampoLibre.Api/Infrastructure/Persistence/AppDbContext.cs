@@ -36,6 +36,9 @@ namespace CampoLibre.Api.Infrastructure.Persistence
 
                 entity.Property(u => u.PasswordHash)
                       .IsRequired();
+
+                entity.Property(u => u.Activo)
+                      .HasDefaultValue(true);
             });
 
             // Cancha

@@ -32,7 +32,8 @@ namespace CampoLibre.Api.Controllers
                     Id = u.Id,
                     NombreCompleto = u.NombreCompleto,
                     Email = u.Email,
-                    Rol = u.Rol
+                    Rol = u.Rol,
+                    Activo = u.Activo
                 })
                 .ToListAsync();
 
@@ -51,7 +52,8 @@ namespace CampoLibre.Api.Controllers
                     Id = u.Id,
                     NombreCompleto = u.NombreCompleto,
                     Email = u.Email,
-                    Rol = u.Rol
+                    Rol = u.Rol,
+                    Activo = u.Activo
                 })
                 .FirstOrDefaultAsync();
 
@@ -81,11 +83,16 @@ namespace CampoLibre.Api.Controllers
             if (emailExiste)
                 return BadRequest("Ya existe un usuario con ese email.");
 
+            if (!Enum.IsDefined(typeof(UserRole), dto.Rol))
+                return BadRequest("Rol inválido.");
+
+
             var usuario = new Usuario
             {
                 NombreCompleto = dto.NombreCompleto,
                 Email = dto.Email,
-                Rol = dto.Rol
+                Rol = dto.Rol,
+                Activo = true
             };
 
             usuario.PasswordHash = _passwordHasher.HashPassword(usuario, dto.Password);
@@ -126,6 +133,10 @@ namespace CampoLibre.Api.Controllers
             if (emailEnUso)
                 return BadRequest("Ya existe otro usuario con ese email.");
 
+            if (!Enum.IsDefined(typeof(UserRole), dto.Rol))
+                return BadRequest("Rol inválido.");
+
+
             usuario.NombreCompleto = dto.NombreCompleto;
             usuario.Email = dto.Email;
             usuario.Rol = dto.Rol;
@@ -154,5 +165,20 @@ namespace CampoLibre.Api.Controllers
 
             return NoContent();
         }
+
+        // PATCH: api/usuarios/5/activo
+        [HttpPatch("{id:int}/activo")]
+        [Authorize(Roles = "Admin,Operador")]
+        public async Task<IActionResult> SetActivo(int id, [FromBody] bool activo)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario is null) return NotFound();
+
+            usuario.Activo = activo;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
     }
 }

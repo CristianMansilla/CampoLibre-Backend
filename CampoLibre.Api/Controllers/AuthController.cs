@@ -51,7 +51,8 @@ namespace CampoLibre.Api.Controllers
             {
                 NombreCompleto = dto.NombreCompleto,
                 Email = dto.Email,
-                Rol = dto.Rol
+                Rol = UserRole.Cliente,
+                Activo = true
             };
 
             usuario.PasswordHash = _passwordHasher.HashPassword(usuario, dto.Password);
@@ -68,11 +69,15 @@ namespace CampoLibre.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login([FromBody] AuthLoginDto dto)
         {
+
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
             if (usuario is null)
                 return Unauthorized("Credenciales inválidas.");
+
+            if (!usuario.Activo)
+                return Unauthorized("Usuario dado de baja.");
 
             var resultado = _passwordHasher.VerifyHashedPassword(
                 usuario,
@@ -95,6 +100,7 @@ namespace CampoLibre.Api.Controllers
 
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
                 new Claim(ClaimTypes.Name, usuario.NombreCompleto),
