@@ -313,3 +313,4 @@ C:\Users\ASUS\Desktop\CampoLibre-Backend\CampoLibre.Api\obj\Debug\net9.0\CampoLi
 C:\Users\ASUS\Desktop\CampoLibre-Backend\CampoLibre.Api\obj\Debug\net9.0\CampoLibre.Api.genruntimeconfig.cache
 C:\Users\ASUS\Desktop\CampoLibre-Backend\CampoLibre.Api\obj\Debug\net9.0\ref\CampoLibre.Api.dll
 C:\Users\ASUS\Desktop\CampoLibre-Backend\CampoLibre.Api\bin\Debug\net9.0\appsettings.Local.json
+C:\Users\ASUS\Desktop\CampoLibre-Backend\CampoLibre.Api\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
